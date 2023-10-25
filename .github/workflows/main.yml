@@ -30,6 +30,11 @@ jobs:
       - name: Install Dependencies (Poetry)
         run: |
           poetry install 
+
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PWD/src" >> $GITHUB_ENV
+
       
       - name: Run Tests
         run: |
