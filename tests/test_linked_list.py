@@ -1,7 +1,7 @@
 import sys 
 sys.path.append('/Users/aaronfeinberg/Projects/Refactor-CLI/')
 
-from assignmentlistssolutions import Node, DoublyLinkedList
+from src.cmpsc132_linked_lists.assignmentlistssolutions import Node, DoublyLinkedList
 
 # creating and populating a doubly linked list #dlL should have 4 elements!!!!!!!
 dL = DoublyLinkedList()
