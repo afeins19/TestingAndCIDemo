@@ -1,5 +1,3 @@
-import sys 
-sys.path.append('/Users/aaronfeinberg/Projects/Refactor-CLI/')
 
 from src.cmpsc132_linked_lists.assignmentlistssolutions import Node, DoublyLinkedList
 

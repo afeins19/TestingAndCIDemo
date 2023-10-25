@@ -4,6 +4,11 @@ version = "0.1.0"
 description = "this will test the linked list assignment"
 authors = ["afeins19 <afeinberg35@gmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "src/my_module" },
+    { include = "src/another_module" }
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
