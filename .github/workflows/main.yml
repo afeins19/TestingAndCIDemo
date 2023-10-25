@@ -1,0 +1,42 @@
+name: Python Continuous Integration
+
+on:  
+  push:
+    branches: [ main ]
+
+jobs: 
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+
+      - name: Start and Configure Python ${{ matrix.python-version }} 
+        uses: actions/setup-python@v2
+
+
+      - name: Install and Configure Poetry  
+        run: | 
+          python -m pip install --upgrade pip 
+          pip install poetry 
+          poetry config virtualenvs.in-project true  # this will place the virtualenv in `.venv` within the project directory
+
+      - name: Install Dependencies (Poetry)
+        run: |
+          poetry install 
+      
+      - name: Run Tests
+        run: |
+          poetry run pytest 
+
+      - name: Generate Coverage Report
+        run: |
+          coverage run pytest 
+          coverage report 
+        
