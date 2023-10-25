@@ -5,9 +5,10 @@ description = "this will test the linked list assignment"
 authors = ["afeins19 <afeinberg35@gmail.com>"]
 readme = "README.md"
 packages = [
-    { include = "src/my_module" },
-    { include = "src/another_module" }
+    { include = "src/cmpsc132_linked_lists/assignmentlistssolutions.py" },
+    { include = "tests/test_linked_list.py" }
 ]
+
 
 
 [tool.poetry.dependencies]
