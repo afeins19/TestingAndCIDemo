@@ -1,9 +1,11 @@
 name: Python Continuous Integration
 
+# when a new push happens...
 on:  
   push:
     branches: [ main ]
 
+# do this job
 jobs: 
   build:
 
@@ -12,34 +14,47 @@ jobs:
     strategy:
       matrix:
         python-version: [3.9]
-
+  
     steps:
+    # github checks out via its built in actions
       - name: Check Out Code
         uses: actions/checkout@v2
 
       - name: Start and Configure Python ${{ matrix.python-version }} 
         uses: actions/setup-python@v2
 
-
+      # get poetry in there
       - name: Install and Configure Poetry  
         run: | 
           python -m pip install --upgrade pip 
           pip install poetry 
           poetry config virtualenvs.in-project true  # this will place the virtualenv in `.venv` within the project directory
 
+        # cache and check for dependencies already cached to speed things up
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            .venv
+            ~/.cache/pip
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+        # get all uncahced dependencies
       - name: Install Dependencies (Poetry)
         run: |
           poetry install 
 
-
+        # this fixed some issue so im leaving it 
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$PWD/src" >> $GITHUB_ENV
-
-      
+  
       - name: Run Tests
         run: |
           poetry run pytest 
 
+        # Generates a code coverage report (should be above 90%)
       - name: Generate Coverage Report
         run: |
           poetry run coverage run -m pytest 
