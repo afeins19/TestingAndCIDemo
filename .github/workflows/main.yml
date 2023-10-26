@@ -7,6 +7,32 @@ on:
 
 # do these jobs
 jobs: 
+  lint:
+    
+        # running a linter to clean up our code
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checking Out Code
+        uses: actions/checkout@v2
+        with:
+          python-version: 3.9
+
+      - name: Setting up Python 
+        run:  actions/setup-python@v2
+
+      - name: Installing Poetry
+        run: pip install poetry
+
+      - name: Getting Dependencies 
+        run: poetry install 
+        
+      - name: Running Linter (Flake8)
+        run: poetry run flake8 src tests
+        env:
+          FLAKE8_IGNORE: "E999, F821"  # wont fail the CI for linting problems 
+
   build:
     runs-on: ubuntu-latest
 
@@ -59,9 +85,4 @@ jobs:
           poetry run coverage run -m pytest 
           poetry run coverage report 
 
-        # running a linter to clean up our code
-      - name: Linting
-        run: poetry run flake8 src tests
-        env:
-          FLAKE8_IGNORE: "E999, F821"  # wont fail the CI for linting problems 
         
