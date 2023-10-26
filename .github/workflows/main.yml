@@ -12,22 +12,42 @@ jobs:
         # running a linter to clean up our code
     name: Linting
     runs-on: ubuntu-latest
+  
+    strategy:
+      matrix:
+        python-version: [3.9]
+  
     steps:
-
+    # github checks out via its built in actions
       - name: Checking Out Code
         uses: actions/checkout@v2
+
+      - name: Seting up Python ${{ matrix.python-version }} 
+        uses: actions/setup-python@v2
+
+      # get poetry in there
+      - name: Installing and Configure Poetry  
+        run: | 
+          python -m pip install --upgrade pip 
+          pip install poetry 
+          poetry config virtualenvs.in-project true  # this will place the virtualenv in `.venv` within the project directory
+        # cache and check for dependencies already cached to speed things up
+      - name: Caching Poetry dependencies
+        uses: actions/cache@v2
         with:
-          python-version: 3.9
-
-      - name: Setting up Python 
-        run:  actions/setup-python@v2
-
-      - name: Installing Poetry
-        run: pip install poetry
-
-      - name: Getting Dependencies 
-        run: poetry install 
-        
+          path: |
+            .venv
+            ~/.cache/pip
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+        # get all uncahced dependencies
+      - name: Installing Dependencies (Poetry)
+        run: |
+          poetry install 
+        # this fixed some issue so im leaving it 
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PWD/src" >> $GITHUB_ENV
       - name: Running Linter (Flake8)
         run: poetry run flake8 src tests
         env:
